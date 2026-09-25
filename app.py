@@ -60,7 +60,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 3. Dummy Database & Navigation State
+# 3. Dummy Database & Navigation State (Ensuring 'id' is present)
 if "posts" not in st.session_state:
     st.session_state.posts = [
         {
@@ -95,7 +95,7 @@ st.markdown("---")
 # 5. Page Routing & Detail View Logic
 if st.session_state.selected_post_id is not None:
     # --- INDIVIDUAL POST VIEW ---
-    post = next((p for p in st.session_state.posts if p["id"] == st.session_state.selected_post_id), None)
+    post = next((p for p in st.session_state.posts if p.get("id") == st.session_state.selected_post_id), None)
     
     if post:
         if st.button("← Back to Feed"):
@@ -128,7 +128,11 @@ else:
         st.markdown("<br>", unsafe_allow_html=True)
 
         # Render Blog Posts with Interactive Buttons
-        for post in st.session_state.posts:
+        for i, post in enumerate(st.session_state.posts):
+            # Fallback assignment for 'id' if missing from older sessions
+            if "id" not in post:
+                post["id"] = i + 1
+                
             st.markdown(
                 f"""
                 <div class="blog-card">
@@ -139,8 +143,8 @@ else:
                 """,
                 unsafe_allow_html=True,
             )
-            # Button directly beneath each card to open it
-            if st.button(f"Read Full Post: {post['title']}", key=f"btn_{post['id']}"):
+            
+            if st.button(f"Read Full Post: {post['title']}", key=f"btn_{post['id']}_{i}"):
                 st.session_state.selected_post_id = post['id']
                 st.rerun()
             st.markdown("<br>", unsafe_allow_html=True)
