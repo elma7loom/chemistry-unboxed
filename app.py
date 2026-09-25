@@ -10,30 +10,29 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS for Balanced Spacing & Clean Layout
+# 2. Custom CSS: Rubik Font, Leafy Green Background, and Large White Title
 st.markdown(
     """
     <style>
-        /* Give the top proper breathing room away from Streamlit's black bar */
+        /* Import Rubik font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+        /* Give the top proper breathing room */
         .block-container {
             padding-top: 4.5rem !important;
         }
 
-.rubik-<uniquifier> {
-  font-family: "Rubik", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
-  font-style: normal;
-}
-        /* Global Background and Text Colors */
+        /* Global Background and Typography */
         .stApp {
-            background-color: #F4F5F0; /* Light neutral canvas */
-            color: #3B4733;            /* Minor accent for text */
+            background-color: #E2EFE0; /* Light leafy green background */
+            color: #2D3E2E;            /* Deep forest green for text */
+            font-family: 'Rubik', sans-serif;
         }
         
         /* Headers */
         h1, h2, h3, h4, h5, h6 {
-            color: #3B4733 !important;
+            color: #2D3E2E !important;
+            font-family: 'Rubik', sans-serif;
         }
 
         /* Make Navigation Text Perfectly Legible */
@@ -41,44 +40,48 @@ st.markdown(
         [data-testid="stRadio"] span, 
         [data-testid="stRadio"] div, 
         [data-testid="stRadio"] p {
-            color: #3B4733 !important;
+            color: #2D3E2E !important;
             font-weight: 600 !important;
+            font-family: 'Rubik', sans-serif;
         }
 
         /* Stealth Low-Contrast Admin Login */
         [data-testid="stExpander"] {
             background-color: transparent !important;
-            border: 1px solid #dcded5 !important;
+            border: 1px solid #b8cbc0 !important;
             border-radius: 6px;
             box-shadow: none !important;
         }
         [data-testid="stExpander"] summary {
-            color: #9a9c94 !important; /* Low contrast, blends into background */
+            color: #728c7b !important; 
             font-size: 0.8rem !important;
+            font-family: 'Rubik', sans-serif;
         }
 
-        /* Main Content Cards (Main Color 60%) */
+        /* Main Content Cards */
         .blog-card {
-            background-color: #CABC54; /* Main color */
+            background-color: #FFFFFF; /* Crisp white cards to pop against leafy green */
             padding: 25px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 20px;
-            color: #3B4733;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            color: #2D3E2E;
+            box-shadow: 0 4px 12px rgba(45, 62, 46, 0.06);
+            border: 1px solid #cce0d0;
         }
 
         /* Buttons */
         .stButton>button {
-            background-color: #3B4733; /* Minor accent */
-            color: #CABC54;            /* Main color */
+            background-color: #2D3E2E; 
+            color: #E2EFE0;            
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             padding: 0.5rem 1rem;
             font-weight: bold;
+            font-family: 'Rubik', sans-serif;
         }
         .stButton>button:hover {
-            background-color: #5B764C; 
-            color: #F4F5F0;
+            background-color: #435E44; 
+            color: #FFFFFF;
         }
     </style>
     """,
@@ -100,13 +103,13 @@ def load_posts():
             "id": 1,
             "title": "Welcome to My Earthy Blog",
             "date": "September 25, 2026",
-            "content": "This is the first post on my new Streamlit blog. I'm using a natural, calming color palette to share my thoughts on tech, life, and nature. Building a digital garden requires patience, clean design, and a love for simple aesthetics.",
+            "content": "This is the first post on my new Streamlit blog. I'm using a natural, calming color palette to share my thoughts on tech, life, and nature.",
         },
         {
             "id": 2,
             "title": "Why Simple Tech Matters",
             "date": "September 20, 2026",
-            "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable. You don't always need massive frameworks to share your ideas with the world.",
+            "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable.",
         },
     ]
 
@@ -123,11 +126,12 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. TOP HEADER BAR (Title, Navigation, and Stealth Admin)
+# 4. TOP HEADER BAR (Massive White Title, Navigation, and Stealth Admin)
 top_col1, top_col2, top_col3 = st.columns([1.5, 2.5, 1])
 
 with top_col1:
-    st.markdown("<h3 style='margin: 0; padding-top: 5px;'>🌿 My Blog</h3>", unsafe_allow_html=True)
+    # Large, bold, white title using Rubik
+    st.markdown("<h1 style='color: #FFFFFF !important; font-size: 2.8rem; font-weight: 700; margin: 0; line-height: 1.1;'>🌿 My Blog</h1>", unsafe_allow_html=True)
 
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
@@ -182,10 +186,10 @@ if st.session_state.selected_post_id is not None:
         st.markdown(f"<br>", unsafe_allow_html=True)
         st.markdown(
             f"""
-            <div class="blog-card" style="background-color: #CABC54;">
+            <div class="blog-card">
                 <h1>{post['title']}</h1>
                 <p><em>Published on {post['date']}</em></p>
-                <hr style="border-color: #3B4733;">
+                <hr style="border-color: #cce0d0;">
                 <p style="font-size: 1.1rem; line-height: 1.6;">{post['content']}</p>
             </div>
             """,
