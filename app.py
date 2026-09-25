@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS Injection for the Earthy Palette & Radio Text Fix
+# 2. Custom CSS Injection for Earthy Palette & Stealth Login Box
 st.markdown(
     """
     <style>
@@ -32,6 +32,18 @@ st.markdown(
         [data-testid="stRadio"] p {
             color: #3B4733 !important;
             font-weight: 600 !important;
+        }
+
+        /* Make the Owner Login expander subtle and blend into the background */
+        [data-testid="stExpander"] {
+            background-color: transparent !important;
+            border: 1px solid #dcded5 !important;
+            border-radius: 8px;
+            box-shadow: none !important;
+        }
+        [data-testid="stExpander"] summary {
+            color: #8c9a85 !important; /* Low contrast muted text */
+            font-size: 0.85rem !important;
         }
 
         /* Main Content Cards (Main Color 60%) */
@@ -101,40 +113,41 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. Horizontal Top Navigation & Admin Check in a discreet expander
-col_title, col_admin = st.columns([3, 1])
-with col_title:
-    st.markdown("### 🌿 My Personal Blog")
+# 4. VERY TOP HEADER: Horizontal Navigation & Stealth Login
+header_col1, header_col2, header_col3 = st.columns([2, 2, 1])
 
-with col_admin:
-    with st.expander("🔐 Owner Login"):
-        if not st.session_state.is_admin:
-            pwd = st.text_input("Password", type="password", key="admin_pwd")
-            # Change "mysecretpassword" to your own secret password!
-            if st.button("Log In"):
-                if pwd == "mysecretpassword": 
-                    st.session_state.is_admin = True
-                    st.success("Logged in!")
-                    st.rerun()
-                else:
-                    st.error("Incorrect password")
-        else:
-            st.write("Status: **Logged In**")
-            if st.button("Log Out"):
-                st.session_state.is_admin = False
-                st.rerun()
+with header_col1:
+    st.markdown("### 🌿 My Blog")
 
 # Build navigation items dynamically based on login status
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
     nav_options.append("Write a Post")
 
-page = st.radio(
-    "Navigation", 
-    nav_options, 
-    horizontal=True,
-    label_visibility="collapsed"
-)
+with header_col2:
+    page = st.radio(
+        "Navigation", 
+        nav_options, 
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+
+with header_col3:
+    # Low-contrast, subtle login box tucked neatly in the top right
+    with st.expander("🔐 Admin"):
+        if not st.session_state.is_admin:
+            pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
+            if st.button("Enter"):
+                if pwd == "mysecretpassword":  # Change this to your password!
+                    st.session_state.is_admin = True
+                    st.rerun()
+                else:
+                    st.error("Wrong")
+        else:
+            st.write("✓ Logged In")
+            if st.button("Log Out"):
+                st.session_state.is_admin = False
+                st.rerun()
 
 st.markdown("---")
 
@@ -150,7 +163,6 @@ if st.session_state.selected_post_id is not None:
                 st.session_state.selected_post_id = None
                 st.rerun()
         with col2:
-            # Only show delete button if logged in as admin
             if st.session_state.is_admin:
                 if st.button("🗑️ Delete Post", key="delete_full_view"):
                     st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post["id"]]
@@ -203,7 +215,6 @@ else:
                 unsafe_allow_html=True,
             )
             
-            # Show buttons depending on admin status
             if st.session_state.is_admin:
                 b_col1, b_col2 = st.columns([3, 1])
                 with b_col1:
