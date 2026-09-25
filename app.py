@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS Injection for the Earthy Palette & Horizontal Nav
+# 2. Custom CSS Injection for the Earthy Palette & Nav Text Fix
 st.markdown(
     """
     <style>
@@ -23,12 +23,10 @@ st.markdown(
             color: #3B4733 !important;
         }
 
-        /* Top Navigation Bar Styling Container */
-        .top-nav-container {
-            background-color: #5B764C; /* Secondary color (30%) */
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
+        /* FIX: Force horizontal radio text to use the minor accent color (#3B4733) */
+        div.row-widget.stRadio div[role="radiogroup"] label p {
+            color: #3B4733 !important;
+            font-weight: 600;
         }
 
         /* Main Content Cards (Main Color 60%) */
@@ -77,7 +75,6 @@ if "posts" not in st.session_state:
 # 4. Horizontal Top Navigation
 st.markdown("### 🌿 My Personal Blog")
 
-# Using Streamlit's native horizontal radio button for top layout
 page = st.radio(
     "Navigation", 
     ["Home / Feed", "About Me", "Write a Post"], 
