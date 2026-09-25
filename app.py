@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS: Rubik Font, Leafy Green Background, and Perfected Title Layout
+# 2. Custom CSS: Rubik Font, Leafy Green Background, and Single-Line Title Layout
 st.markdown(
     """
     <style>
@@ -19,7 +19,7 @@ st.markdown(
 
         /* Give the top proper breathing room */
         .block-container {
-            padding-top: 4.5rem !important;
+            padding-top: 4rem !important;
         }
 
         /* Global Background and Typography */
@@ -126,12 +126,12 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. TOP HEADER BAR (Optimized proportions to keep title on a single line)
-top_col1, top_col2, top_col3 = st.columns([3, 2, 1.2])
+# 4. TOP HEADER BAR (Balanced Column Widths & Single-Line Title)
+top_col1, top_col2, top_col3 = st.columns([2.2, 2.6, 1.2])
 
 with top_col1:
-    # Adjusted font size to 2rem and added nowrap to guarantee a single line
-    st.markdown("<h1 style='color: #FFFFFF !important; font-size: 2rem; font-weight: 700; margin: 0; padding-top: 5px; white-space: nowrap;'>🌿 My Blog</h1>", unsafe_allow_html=True)
+    # Optimized font size and white-space property to prevent line-wrapping
+    st.markdown("<h1 style='color: #2D3E2E !important; font-size: 1.7rem; font-weight: 700; margin: 0; padding-top: 8px; white-space: nowrap;'>🌿 My Blog</h1>", unsafe_allow_html=True)
 
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
@@ -150,7 +150,7 @@ with top_col3:
         if not st.session_state.is_admin:
             pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
             if st.button("Enter"):
-                if pwd == "mysecretpassword":  # Change this to your chosen password!
+                if pwd == "mysecretpassword":  # Change to your chosen password!
                     st.session_state.is_admin = True
                     st.rerun()
                 else:
@@ -235,7 +235,7 @@ else:
                         st.rerun()
                 with b_col2:
                     if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
-                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post['id']]
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
                         save_posts(st.session_state.posts)
                         st.success(f"Deleted '{post['title']}'")
                         st.rerun()
@@ -259,7 +259,7 @@ else:
         )
 
     elif page == "Write a Post" and st.session_state.is_admin:
-        st.title("✍️ Create a New Post")
+        st.title("Create a New Post")
         
         with st.form("blog_form"):
             title = st.text_input("Post Title")
