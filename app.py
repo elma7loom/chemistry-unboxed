@@ -72,7 +72,6 @@ def load_posts():
                 return json.load(f)
         except:
             pass
-    # Default fallback posts if file doesn't exist yet
     return [
         {
             "id": 1,
@@ -99,12 +98,40 @@ if "posts" not in st.session_state:
 if "selected_post_id" not in st.session_state:
     st.session_state.selected_post_id = None
 
-# 4. Horizontal Top Navigation
-st.markdown("### 🌿 My Personal Blog")
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
+
+# 4. Horizontal Top Navigation & Admin Check in a discreet expander
+col_title, col_admin = st.columns([3, 1])
+with col_title:
+    st.markdown("### 🌿 My Personal Blog")
+
+with col_admin:
+    with st.expander("🔐 Owner Login"):
+        if not st.session_state.is_admin:
+            pwd = st.text_input("Password", type="password", key="admin_pwd")
+            # Change "mysecretpassword" to whatever password you want!
+            if st.button("Log In"):
+                if pwd == "mysecretpassword": 
+                    st.session_state.is_admin = True
+                    st.success("Logged in!")
+                    st.rerun()
+                else:
+                    st.error("Incorrect password")
+        else:
+            st.write("Status: **Logged In**")
+            if st.button("Log Out"):
+                st.session_state.is_admin = False
+                st.rerun()
+
+# Build navigation items dynamically based on login status
+nav_options = ["Home / Feed", "About Me"]
+if st.session_state.is_admin:
+    nav_options.append("Write a Post")
 
 page = st.radio(
     "Navigation", 
-    ["Home / Feed", "About Me", "Write a Post"], 
+    nav_options, 
     horizontal=True,
     label_visibility="collapsed"
 )
@@ -117,9 +144,20 @@ if st.session_state.selected_post_id is not None:
     post = next((p for p in st.session_state.posts if p.get("id") == st.session_state.selected_post_id), None)
     
     if post:
-        if st.button("← Back to Feed"):
-            st.session_state.selected_post_id = None
-            st.rerun()
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            if st.button("← Back"):
+                st.session_state.selected_post_id = None
+                st.rerun()
+        with col2:
+            # Only show delete button if logged in as admin
+            if st.session_state.is_admin:
+                if st.button("🗑️ Delete Post", key="delete_full_view"):
+                    st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post["id"]]
+                    save_posts(st.session_state.posts)
+                    st.session_state.selected_post_id = None
+                    st.success("Post deleted successfully!")
+                    st.rerun()
             
         st.markdown(f"<br>", unsafe_allow_html=True)
         st.markdown(
@@ -146,7 +184,10 @@ else:
         st.write("Welcome to my digital garden of thoughts and stories.")
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Render Blog Posts with Interactive Buttons
+        if not st.session_state.posts:
+            st.info("No blog posts found.")
+
+        # Render Blog Posts
         for i, post in enumerate(st.session_state.posts):
             if "id" not in post:
                 post["id"] = i + 1
@@ -162,9 +203,24 @@ else:
                 unsafe_allow_html=True,
             )
             
-            if st.button(f"Read Full Post: {post['title']}", key=f"btn_{post['id']}_{i}"):
-                st.session_state.selected_post_id = post['id']
-                st.rerun()
+            # Show buttons depending on admin status
+            if st.session_state.is_admin:
+                b_col1, b_col2 = st.columns([3, 1])
+                with b_col1:
+                    if st.button(f"Read Full Post", key=f"read_{post['id']}_{i}"):
+                        st.session_state.selected_post_id = post['id']
+                        st.rerun()
+                with b_col2:
+                    if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
+                        save_posts(st.session_state.posts)
+                        st.success(f"Deleted '{post['title']}'")
+                        st.rerun()
+            else:
+                if st.button(f"Read Full Post", key=f"read_{post['id']}_{i}"):
+                    st.session_state.selected_post_id = post['id']
+                    st.rerun()
+
             st.markdown("<br>", unsafe_allow_html=True)
 
     elif page == "About Me":
@@ -179,7 +235,7 @@ else:
             unsafe_allow_html=True,
         )
 
-    elif page == "Write a Post":
+    elif page == "Write a Post" and st.session_state.is_admin:
         st.title("✍️ Create a New Post")
         
         with st.form("blog_form"):
@@ -190,14 +246,11 @@ else:
             
             if submitted:
                 if title and content:
-                    # Determine next safe ID
                     max_id = max([p.get("id", 0) for p in st.session_state.posts], default=0)
                     new_id = max_id + 1
                     
                     new_post = {"id": new_id, "title": title, "date": date, "content": content}
                     st.session_state.posts.insert(0, new_post)
-                    
-                    # Save permanently to file
                     save_posts(st.session_state.posts)
                     
                     st.success("Post published and saved successfully!")
