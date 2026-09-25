@@ -5,10 +5,10 @@ st.set_page_config(
     page_title="My Personal Blog",
     page_icon="🌿",
     layout="centered",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS Injection for the Earthy Palette
+# 2. Custom CSS Injection for the Earthy Palette & Horizontal Nav
 st.markdown(
     """
     <style>
@@ -23,23 +23,15 @@ st.markdown(
             color: #3B4733 !important;
         }
 
-        /* Sidebar Styling */
-        [data-testid="stSidebar"] {
+        /* Top Navigation Bar Styling Container */
+        .top-nav-container {
             background-color: #5B764C; /* Secondary color (30%) */
-            color: #F4F5F0;
-        }
-        [data-testid="stSidebar"] h1, 
-        [data-testid="stSidebar"] h2, 
-        [data-testid="stSidebar"] h3, 
-        [data-testid="stSidebar"] label {
-            color: #F4F5F0 !important;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
         }
 
-        /* Main Content Cards / Containers (Main Color 60% influence) */
-        div.stMarkdownContainer {
-            background-color: transparent;
-        }
-        
+        /* Main Content Cards (Main Color 60%) */
         .blog-card {
             background-color: #CABC54; /* Main color (60%) */
             padding: 20px;
@@ -67,30 +59,39 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 3. Sidebar Navigation
-st.sidebar.title("🌿 Navigation")
-page = st.sidebar.radio("Go to", ["Home / Feed", "About Me", "Write a Post"])
-
-# 4. Dummy Database / State for Blog Posts
+# 3. Dummy Database / State for Blog Posts
 if "posts" not in st.session_state:
     st.session_state.posts = [
         {
             "title": "Welcome to My Earthy Blog",
             "date": "September 25, 2026",
-            "content": "This is the first post on my new blog. You'll read about chemistry, interesting molecules, and more.",
+            "content": "This is the first post on my new Streamlit blog. I'm using a natural, calming color palette to share my thoughts on tech, life, and nature.",
         },
         {
             "title": "Why Simple Tech Matters",
             "date": "September 20, 2026",
-            "content": "How we can make chocolate cheaper",
+            "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable.",
         },
     ]
 
+# 4. Horizontal Top Navigation
+st.markdown("### 🌿 My Personal Blog")
+
+# Using Streamlit's native horizontal radio button for top layout
+page = st.radio(
+    "Navigation", 
+    ["Home / Feed", "About Me", "Write a Post"], 
+    horizontal=True,
+    label_visibility="collapsed"
+)
+
+st.markdown("---")
+
 # 5. Page Routing
 if page == "Home / Feed":
-    st.title("My personal blog")
-    st.write("Welcome to my digital base.")
-    st.markdown("---")
+    st.title("🌱 Feed")
+    st.write("Welcome to my digital garden of thoughts and stories.")
+    st.markdown("<br>", unsafe_allow_html=True)
 
     # Render Blog Posts inside Custom Cards
     for post in st.session_state.posts:
