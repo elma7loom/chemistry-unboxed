@@ -19,6 +19,12 @@ st.markdown(
             padding-top: 4.5rem !important;
         }
 
+.rubik-<uniquifier> {
+  font-family: "Rubik", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
         /* Global Background and Text Colors */
         .stApp {
             background-color: #F4F5F0; /* Light neutral canvas */
