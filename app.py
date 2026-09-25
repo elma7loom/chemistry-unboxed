@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS: Rubik Font, Leafy Green Background, and Large White Title
+# 2. Custom CSS: Rubik Font, Leafy Green Background, and Single-Line Title Fix
 st.markdown(
     """
     <style>
@@ -126,12 +126,12 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. TOP HEADER BAR (Massive White Title, Navigation, and Stealth Admin)
-top_col1, top_col2, top_col3 = st.columns([1.5, 2.5, 1])
+# 4. TOP HEADER BAR (Wider first column so title stays on one line)
+top_col1, top_col2, top_col3 = st.columns([2.2, 2.3, 1.2])
 
 with top_col1:
-    # Large, bold, white title using Rubik
-    st.markdown("<h1 style='color: #FFFFFF !important; font-size: 2.8rem; font-weight: 700; margin: 0; line-height: 1.1;'>🌿 My Blog</h1>", unsafe_allow_html=True)
+    # Added white-space: nowrap to prevent wrapping
+    st.markdown("<h1 style='color: #FFFFFF !important; font-size: 2.5rem; font-weight: 700; margin: 0; line-height: 1.1; white-space: nowrap;'>🌿 My Blog</h1>", unsafe_allow_html=True)
 
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
@@ -259,7 +259,7 @@ else:
         )
 
     elif page == "Write a Post" and st.session_state.is_admin:
-        st.title("✍️ Create a New Post")
+        st.title(" Create a New Post")
         
         with st.form("blog_form"):
             title = st.text_input("Post Title")
