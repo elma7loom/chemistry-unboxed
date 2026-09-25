@@ -1,4 +1,6 @@
 import streamlit as st
+import json
+import os
 
 # 1. Page Configuration
 st.set_page_config(
@@ -60,9 +62,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 3. Dummy Database & Navigation State (Ensuring 'id' is present)
-if "posts" not in st.session_state:
-    st.session_state.posts = [
+# 3. Persistent Storage Handlers using a JSON file
+POSTS_FILE = "posts.json"
+
+def load_posts():
+    if os.path.exists(POSTS_FILE):
+        try:
+            with open(POSTS_FILE, "r") as f:
+                return json.load(f)
+        except:
+            pass
+    # Default fallback posts if file doesn't exist yet
+    return [
         {
             "id": 1,
             "title": "Welcome to My Earthy Blog",
@@ -76,6 +87,14 @@ if "posts" not in st.session_state:
             "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable. You don't always need massive frameworks to share your ideas with the world.",
         },
     ]
+
+def save_posts(posts_list):
+    with open(POSTS_FILE, "w") as f:
+        json.dump(posts_list, f, indent=4)
+
+# Initialize Session State
+if "posts" not in st.session_state:
+    st.session_state.posts = load_posts()
 
 if "selected_post_id" not in st.session_state:
     st.session_state.selected_post_id = None
@@ -129,7 +148,6 @@ else:
 
         # Render Blog Posts with Interactive Buttons
         for i, post in enumerate(st.session_state.posts):
-            # Fallback assignment for 'id' if missing from older sessions
             if "id" not in post:
                 post["id"] = i + 1
                 
@@ -172,11 +190,17 @@ else:
             
             if submitted:
                 if title and content:
-                    new_id = len(st.session_state.posts) + 1
-                    st.session_state.posts.insert(
-                        0, {"id": new_id, "title": title, "date": date, "content": content}
-                    )
-                    st.success("Post published successfully!")
+                    # Determine next safe ID
+                    max_id = max([p.get("id", 0) for p in st.session_state.posts], default=0)
+                    new_id = max_id + 1
+                    
+                    new_post = {"id": new_id, "title": title, "date": date, "content": content}
+                    st.session_state.posts.insert(0, new_post)
+                    
+                    # Save permanently to file
+                    save_posts(st.session_state.posts)
+                    
+                    st.success("Post published and saved successfully!")
                     st.rerun()
                 else:
                     st.error("Please fill out both the title and content fields.")
