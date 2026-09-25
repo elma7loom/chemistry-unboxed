@@ -10,13 +10,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS for Clean Top Layout & Legible Navigation
+# 2. Custom CSS for Balanced Spacing & Clean Layout
 st.markdown(
     """
     <style>
-        /* Reduce top padding so elements sit nicely near the top */
+        /* Give the top proper breathing room away from Streamlit's black bar */
         .block-container {
-            padding-top: 2rem !important;
+            padding-top: 4.5rem !important;
         }
 
         /* Global Background and Text Colors */
@@ -42,7 +42,7 @@ st.markdown(
         /* Stealth Low-Contrast Admin Login */
         [data-testid="stExpander"] {
             background-color: transparent !important;
-            border: 1px solid #e0e2db !important;
+            border: 1px solid #dcded5 !important;
             border-radius: 6px;
             box-shadow: none !important;
         }
@@ -167,7 +167,7 @@ if st.session_state.selected_post_id is not None:
         with col2:
             if st.session_state.is_admin:
                 if st.button("🗑️ Delete Post", key="delete_full_view"):
-                    st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post["id"]]
+                    st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post["id"]]
                     save_posts(st.session_state.posts)
                     st.session_state.selected_post_id = None
                     st.success("Post deleted successfully!")
@@ -225,7 +225,7 @@ else:
                         st.rerun()
                 with b_col2:
                     if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
-                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post['id']]
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
                         save_posts(st.session_state.posts)
                         st.success(f"Deleted '{post['title']}'")
                         st.rerun()
