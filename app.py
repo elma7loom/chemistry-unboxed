@@ -167,7 +167,7 @@ if st.session_state.selected_post_id is not None:
         with col2:
             if st.session_state.is_admin:
                 if st.button("🗑️ Delete Post", key="delete_full_view"):
-                    st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post["id"]]
+                    st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post["id"]]
                     save_posts(st.session_state.posts)
                     st.session_state.selected_post_id = None
                     st.success("Post deleted successfully!")
