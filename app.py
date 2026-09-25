@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS Injection for the Earthy Palette & Nav Text Fix
+# 2. Custom CSS Injection for the Earthy Palette & Robust Radio Text Fix
 st.markdown(
     """
     <style>
@@ -23,10 +23,13 @@ st.markdown(
             color: #3B4733 !important;
         }
 
-        /* FIX: Force horizontal radio text to use the minor accent color (#3B4733) */
-        div.row-widget.stRadio div[role="radiogroup"] label p {
+        /* ROBUST FIX: Target every element inside the radio component */
+        [data-testid="stRadio"] label, 
+        [data-testid="stRadio"] span, 
+        [data-testid="stRadio"] div, 
+        [data-testid="stRadio"] p {
             color: #3B4733 !important;
-            font-weight: 600;
+            font-weight: 600 !important;
         }
 
         /* Main Content Cards (Main Color 60%) */
