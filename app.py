@@ -6,25 +6,23 @@ import os
 st.set_page_config(
     page_title="My Personal Blog",
     page_icon="🌿",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS for Edge-to-Edge Top Navbar & Earthy Palette
+# 2. Custom CSS for Clean Top Layout & Legible Navigation
 st.markdown(
     """
     <style>
-        /* Remove default Streamlit top padding so content touches the very top */
+        /* Reduce top padding so elements sit nicely near the top */
         .block-container {
-            padding-top: 1rem !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
+            padding-top: 2rem !important;
         }
 
         /* Global Background and Text Colors */
         .stApp {
             background-color: #F4F5F0; /* Light neutral canvas */
-            color: #3B4733;            /* Minor accent for text (10%) */
+            color: #3B4733;            /* Minor accent for text */
         }
         
         /* Headers */
@@ -32,41 +30,30 @@ st.markdown(
             color: #3B4733 !important;
         }
 
-        /* Full-width Top Navigation Bar Styling */
-        .top-navbar {
-            background-color: #5B764C; /* Secondary color (30%) */
-            padding: 12px 25px;
-            border-radius: 0 0 10px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        /* Radio Text in Navbar */
+        /* Make Navigation Text Perfectly Legible */
         [data-testid="stRadio"] label, 
         [data-testid="stRadio"] span, 
         [data-testid="stRadio"] div, 
         [data-testid="stRadio"] p {
-            color: #F4F5F0 !important;
+            color: #3B4733 !important;
             font-weight: 600 !important;
         }
 
-        /* Stealth Login Expander Styling */
+        /* Stealth Low-Contrast Admin Login */
         [data-testid="stExpander"] {
-            background-color: rgba(255, 255, 255, 0.1) !important;
-            border: none !important;
+            background-color: transparent !important;
+            border: 1px solid #e0e2db !important;
             border-radius: 6px;
+            box-shadow: none !important;
         }
         [data-testid="stExpander"] summary {
-            color: #F4F5F0 !important;
-            font-size: 0.85rem !important;
+            color: #9a9c94 !important; /* Low contrast, blends into background */
+            font-size: 0.8rem !important;
         }
 
         /* Main Content Cards (Main Color 60%) */
         .blog-card {
-            background-color: #CABC54; /* Main color (60%) */
+            background-color: #CABC54; /* Main color */
             padding: 25px;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -130,18 +117,17 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. TOP NAVBAR CONTAINER
-st.markdown('<div class="top-navbar">', unsafe_allow_html=True)
-nav_col1, nav_col2, nav_col3 = st.columns([1.5, 3, 1])
+# 4. TOP HEADER BAR (Title, Navigation, and Stealth Admin)
+top_col1, top_col2, top_col3 = st.columns([1.5, 2.5, 1])
 
-with nav_col1:
-    st.markdown("<h3 style='color: #F4F5F0 !important; margin:0;'>🌿 My Blog</h3>", unsafe_allow_html=True)
+with top_col1:
+    st.markdown("<h3 style='margin: 0; padding-top: 5px;'>🌿 My Blog</h3>", unsafe_allow_html=True)
 
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
     nav_options.append("Write a Post")
 
-with nav_col2:
+with top_col2:
     page = st.radio(
         "Navigation", 
         nav_options, 
@@ -149,12 +135,12 @@ with nav_col2:
         label_visibility="collapsed"
     )
 
-with nav_col3:
+with top_col3:
     with st.expander("🔐 Admin"):
         if not st.session_state.is_admin:
             pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
             if st.button("Enter"):
-                if pwd == "mysecretpassword":  # Change to your chosen password
+                if pwd == "mysecretpassword":  # Change this to your chosen password!
                     st.session_state.is_admin = True
                     st.rerun()
                 else:
@@ -165,7 +151,7 @@ with nav_col3:
                 st.session_state.is_admin = False
                 st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("---")
 
 # 5. Page Routing & Detail View Logic
 if st.session_state.selected_post_id is not None:
