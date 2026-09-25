@@ -6,14 +6,21 @@ import os
 st.set_page_config(
     page_title="My Personal Blog",
     page_icon="🌿",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS Injection for Earthy Palette & Stealth Login Box
+# 2. Custom CSS for Edge-to-Edge Top Navbar & Earthy Palette
 st.markdown(
     """
     <style>
+        /* Remove default Streamlit top padding so content touches the very top */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+        }
+
         /* Global Background and Text Colors */
         .stApp {
             background-color: #F4F5F0; /* Light neutral canvas */
@@ -25,31 +32,42 @@ st.markdown(
             color: #3B4733 !important;
         }
 
-        /* Radio Text Fix */
+        /* Full-width Top Navigation Bar Styling */
+        .top-navbar {
+            background-color: #5B764C; /* Secondary color (30%) */
+            padding: 12px 25px;
+            border-radius: 0 0 10px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Radio Text in Navbar */
         [data-testid="stRadio"] label, 
         [data-testid="stRadio"] span, 
         [data-testid="stRadio"] div, 
         [data-testid="stRadio"] p {
-            color: #3B4733 !important;
+            color: #F4F5F0 !important;
             font-weight: 600 !important;
         }
 
-        /* Make the Owner Login expander subtle and blend into the background */
+        /* Stealth Login Expander Styling */
         [data-testid="stExpander"] {
-            background-color: transparent !important;
-            border: 1px solid #dcded5 !important;
-            border-radius: 8px;
-            box-shadow: none !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border: none !important;
+            border-radius: 6px;
         }
         [data-testid="stExpander"] summary {
-            color: #8c9a85 !important; /* Low contrast muted text */
+            color: #F4F5F0 !important;
             font-size: 0.85rem !important;
         }
 
         /* Main Content Cards (Main Color 60%) */
         .blog-card {
             background-color: #CABC54; /* Main color (60%) */
-            padding: 20px;
+            padding: 25px;
             border-radius: 10px;
             margin-bottom: 20px;
             color: #3B4733;
@@ -66,7 +84,7 @@ st.markdown(
             font-weight: bold;
         }
         .stButton>button:hover {
-            background-color: #5B764C; /* Secondary color on hover */
+            background-color: #5B764C; 
             color: #F4F5F0;
         }
     </style>
@@ -74,7 +92,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 3. Persistent Storage Handlers using a JSON file
+# 3. Persistent Storage Handlers
 POSTS_FILE = "posts.json"
 
 def load_posts():
@@ -103,7 +121,6 @@ def save_posts(posts_list):
     with open(POSTS_FILE, "w") as f:
         json.dump(posts_list, f, indent=4)
 
-# Initialize Session State
 if "posts" not in st.session_state:
     st.session_state.posts = load_posts()
 
@@ -113,18 +130,18 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. VERY TOP HEADER: Horizontal Navigation & Stealth Login
-header_col1, header_col2, header_col3 = st.columns([2, 2, 1])
+# 4. TOP NAVBAR CONTAINER
+st.markdown('<div class="top-navbar">', unsafe_allow_html=True)
+nav_col1, nav_col2, nav_col3 = st.columns([1.5, 3, 1])
 
-with header_col1:
-    st.markdown("### 🌿 My Blog")
+with nav_col1:
+    st.markdown("<h3 style='color: #F4F5F0 !important; margin:0;'>🌿 My Blog</h3>", unsafe_allow_html=True)
 
-# Build navigation items dynamically based on login status
 nav_options = ["Home / Feed", "About Me"]
 if st.session_state.is_admin:
     nav_options.append("Write a Post")
 
-with header_col2:
+with nav_col2:
     page = st.radio(
         "Navigation", 
         nav_options, 
@@ -132,13 +149,12 @@ with header_col2:
         label_visibility="collapsed"
     )
 
-with header_col3:
-    # Low-contrast, subtle login box tucked neatly in the top right
+with nav_col3:
     with st.expander("🔐 Admin"):
         if not st.session_state.is_admin:
             pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
             if st.button("Enter"):
-                if pwd == "mysecretpassword":  # Change this to your password!
+                if pwd == "mysecretpassword":  # Change to your chosen password
                     st.session_state.is_admin = True
                     st.rerun()
                 else:
@@ -149,7 +165,7 @@ with header_col3:
                 st.session_state.is_admin = False
                 st.rerun()
 
-st.markdown("---")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # 5. Page Routing & Detail View Logic
 if st.session_state.selected_post_id is not None:
@@ -223,7 +239,7 @@ else:
                         st.rerun()
                 with b_col2:
                     if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
-                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post['id']]
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
                         save_posts(st.session_state.posts)
                         st.success(f"Deleted '{post['title']}'")
                         st.rerun()
