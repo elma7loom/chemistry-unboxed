@@ -77,19 +77,19 @@ if "posts" not in st.session_state:
         {
             "title": "Welcome to My Earthy Blog",
             "date": "September 25, 2026",
-            "content": "This is the first post on my new Streamlit blog. I'm using a natural, calming color palette to share my thoughts on tech, life, and nature.",
+            "content": "This is the first post on my new blog. You'll read about chemistry, interesting molecules, and more.",
         },
         {
             "title": "Why Simple Tech Matters",
             "date": "September 20, 2026",
-            "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable.",
+            "content": "How we can make chocolate cheaper",
         },
     ]
 
 # 5. Page Routing
 if page == "Home / Feed":
-    st.title("🌱 My Personal Blog")
-    st.write("Welcome to my digital garden of thoughts and stories.")
+    st.title("My personal blog")
+    st.write("Welcome to my digital base.")
     st.markdown("---")
 
     # Render Blog Posts inside Custom Cards
