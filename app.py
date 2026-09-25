@@ -110,7 +110,7 @@ with col_admin:
     with st.expander("🔐 Owner Login"):
         if not st.session_state.is_admin:
             pwd = st.text_input("Password", type="password", key="admin_pwd")
-            # Change "mysecretpassword" to whatever password you want!
+            # Change "mysecretpassword" to your own secret password!
             if st.button("Log In"):
                 if pwd == "mysecretpassword": 
                     st.session_state.is_admin = True
@@ -212,7 +212,7 @@ else:
                         st.rerun()
                 with b_col2:
                     if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
-                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post['id']]
                         save_posts(st.session_state.posts)
                         st.success(f"Deleted '{post['title']}'")
                         st.rerun()
