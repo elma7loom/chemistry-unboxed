@@ -3,58 +3,135 @@ import streamlit as st
 # 1. Page Configuration
 st.set_page_config(
     page_title="My Personal Blog",
-    page_icon="✍️",
-    layout="centered"
+    page_icon="🌿",
+    layout="centered",
+    initial_sidebar_state="expanded",
 )
 
-# 2. Sidebar Navigation
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Blog Posts", "About Me"])
+# 2. Custom CSS Injection for the Earthy Palette
+st.markdown(
+    """
+    <style>
+        /* Global Background and Text Colors */
+        .stApp {
+            background-color: #F4F5F0; /* Light neutral canvas */
+            color: #3B4733;            /* Minor accent for text (10%) */
+        }
+        
+        /* Headers */
+        h1, h2, h3, h4, h5, h6 {
+            color: #3B4733 !important;
+        }
 
-# 3. Sample Blog Data (You can later replace this with a database or Markdown files)
-posts = {
-    "Hello World: My First Blog Post": {
-        "date": "September 25, 2026",
-        "content": "Welcome to my new personal blog! Built with Streamlit, this space will house my thoughts, code snippets, projects, and daily updates. Stay tuned for more!"
-    },
-    "Why I Love Building with Python": {
-        "date": "September 20, 2026",
-        "content": "Python makes rapid prototyping so satisfying. From quick data scripts to full interactive web apps using Streamlit, it is incredible how fast you can turn an idea into reality."
-    }
-}
+        /* Sidebar Styling */
+        [data-testid="stSidebar"] {
+            background-color: #5B764C; /* Secondary color (30%) */
+            color: #F4F5F0;
+        }
+        [data-testid="stSidebar"] h1, 
+        [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3, 
+        [data-testid="stSidebar"] label {
+            color: #F4F5F0 !important;
+        }
 
-# 4. Page Routing Logic
-if page == "Home":
-    st.title("Welcome to My Blog 🚀")
-    st.write("Hi there! I'm glad you stopped by. This is my digital garden where I share my journey, ideas, and projects.")
-    
+        /* Main Content Cards / Containers (Main Color 60% influence) */
+        div.stMarkdownContainer {
+            background-color: transparent;
+        }
+        
+        .blog-card {
+            background-color: #CABC54; /* Main color (60%) */
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #3B4733;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Buttons */
+        .stButton>button {
+            background-color: #3B4733; /* Minor accent */
+            color: #CABC54;            /* Main color */
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+        }
+        .stButton>button:hover {
+            background-color: #5B764C; /* Secondary color on hover */
+            color: #F4F5F0;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# 3. Sidebar Navigation
+st.sidebar.title("🌿 Navigation")
+page = st.sidebar.radio("Go to", ["Home / Feed", "About Me", "Write a Post"])
+
+# 4. Dummy Database / State for Blog Posts
+if "posts" not in st.session_state:
+    st.session_state.posts = [
+        {
+            "title": "Welcome to My Earthy Blog",
+            "date": "September 25, 2026",
+            "content": "This is the first post on my new Streamlit blog. I'm using a natural, calming color palette to share my thoughts on tech, life, and nature.",
+        },
+        {
+            "title": "Why Simple Tech Matters",
+            "date": "September 20, 2026",
+            "content": "Building lightweight apps using tools like Streamlit keeps development fast, clean, and enjoyable.",
+        },
+    ]
+
+# 5. Page Routing
+if page == "Home / Feed":
+    st.title("🌱 My Personal Blog")
+    st.write("Welcome to my digital garden of thoughts and stories.")
     st.markdown("---")
-    st.subheader("✨ Latest Posts")
-    
-    # Display the latest 2 posts on the home page
-    for title, info in list(posts.items())[:2]:
-        st.markdown(f"### {title}")
-        st.caption(f"Published on {info['date']}")
-        st.write(info["content"][:120] + "...")
-        st.markdown("---")
 
-elif page == "Blog Posts":
-    st.title("All Articles 📖")
-    st.write("Browse through my complete archive of thoughts and write-ups below.")
-    
-    # Selectbox to choose which post to read
-    selected_post = st.selectbox("Choose a post to read:", list(posts.keys()))
-    
-    if selected_post:
-        st.markdown(f"## {selected_post}")
-        st.caption(f"Published on {posts[selected_post]['date']}")
-        st.write(posts[selected_post]["content"])
+    # Render Blog Posts inside Custom Cards
+    for post in st.session_state.posts:
+        st.markdown(
+            f"""
+            <div class="blog-card">
+                <h2>{post['title']}</h2>
+                <p><em>Published on {post['date']}</em></p>
+                <p>{post['content']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 elif page == "About Me":
-    st.title("About Me 👨‍💻")
-    st.write("Hello! I'm a passionate creator exploring technology, code, and writing.")
+    st.title("👤 About Me")
+    st.markdown(
+        """
+        <div class="blog-card">
+            <h3>Hello there!</h3>
+            <p>I'm a creator sharing my journey through code, writing, and minimalist design. This blog serves as my personal space on the web.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+elif page == "Write a Post":
+    st.title("✍️ Create a New Post")
     
-    st.markdown("### Let's Connect")
-    st.markdown("- **GitHub:** [github.com/yourusername](https://github.com)")
-    st.markdown("- **Twitter:** [@yourusername](https://twitter.com)")
-    st.markdown("- **Email:** youremail@example.com")
+    with st.form("blog_form"):
+        title = st.text_input("Post Title")
+        date = st.text_input("Date (e.g., October 12, 2026)")
+        content = st.text_area("Post Content")
+        submitted = st.form_submit_button("Publish Post")
+        
+        if submitted:
+            if title and content:
+                st.session_state.posts.insert(
+                    0, {"title": title, "date": date, "content": content}
+                )
+                st.success("Post published successfully!")
+                st.rerun()
+            else:
+                st.error("Please fill out both the title and content fields.")
