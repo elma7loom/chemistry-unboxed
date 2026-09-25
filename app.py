@@ -10,77 +10,96 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Custom CSS: Rubik Font, Leafy Green Background, and Navbar Styling
+# 2. Custom CSS: Artistic Journal & Digital Garden Aesthetic
 st.markdown(
     """
     <style>
-        /* Import Rubik font from Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
-        /* Give the top proper breathing room */
         .block-container {
-            padding-top: 3.5rem !important;
+            padding-top: 3rem !important;
+            max-width: 700px; /* Nighter, more intimate editorial width */
         }
 
-        /* Global Background and Typography */
+        /* Warm, earthy canvas background */
         .stApp {
-            background-color: #E2EFE0; /* Light leafy green background */
-            color: #2D3E2E;            /* Deep forest green for text */
+            background-color: #E8EFE1; 
+            color: #2C352D;            
             font-family: 'Rubik', sans-serif;
         }
         
-        /* Headers */
         h1, h2, h3, h4, h5, h6 {
-            color: #2D3E2E !important;
+            color: #2C352D !important;
             font-family: 'Rubik', sans-serif;
         }
 
-        /* Make Navigation Text Perfectly Legible */
-        [data-testid="stRadio"] label, 
-        [data-testid="stRadio"] span, 
-        [data-testid="stRadio"] div, 
-        [data-testid="stRadio"] p {
-            color: #2D3E2E !important;
-            font-weight: 600 !important;
-            font-family: 'Rubik', sans-serif;
+        /* Clean Organic Navigation Bar */
+        .artistic-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(253, 251, 247, 0.6);
+            padding: 12px 24px;
+            border-radius: 16px;
+            border: 1px solid #D0DEC9;
+            margin-bottom: 35px;
+            backdrop-filter: blur(4px);
         }
 
-        /* Stealth Low-Contrast Admin Login */
+        /* Journal-style Post Cards (Warm Cream Paper Feel) */
+        .blog-card {
+            background-color: #FDFBF7; /* Warm eggshell paper */
+            padding: 32px;
+            border-radius: 18px;
+            margin-bottom: 28px;
+            color: #2C352D;
+            border: 1px solid #D5E1CE;
+            box-shadow: 0 10px 30px rgba(44, 53, 45, 0.03); /* Ultra-soft natural shadow */
+            transition: transform 0.2s ease;
+        }
+        .blog-card:hover {
+            transform: translateY(-2px); /* Gentle organic lift */
+        }
+
+        /* Subtle Journal Metadata */
+        .post-date {
+            font-size: 0.85rem;
+            color: #6A7B6B;
+            font-style: italic;
+            letter-spacing: 0.2px;
+            margin-bottom: 12px;
+        }
+
+        /* Navigation Radio Styling */
+        [data-testid="stRadio"] label {
+            color: #2C352D !important;
+            font-weight: 500 !important;
+        }
+
+        /* Stealth Admin Expander */
         [data-testid="stExpander"] {
             background-color: transparent !important;
-            border: 1px solid #b8cbc0 !important;
-            border-radius: 6px;
-            box-shadow: none !important;
+            border: 1px dashed #A8BCA0 !important;
+            border-radius: 8px;
         }
         [data-testid="stExpander"] summary {
-            color: #728c7b !important; 
+            color: #5A6E5C !important; 
             font-size: 0.8rem !important;
-            font-family: 'Rubik', sans-serif;
         }
 
-        /* Main Content Cards */
-        .blog-card {
-            background-color: #FFFFFF; /* Crisp white cards to pop against leafy green */
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            color: #2D3E2E;
-            box-shadow: 0 4px 12px rgba(45, 62, 46, 0.06);
-            border: 1px solid #cce0d0;
-        }
-
-        /* Buttons */
+        /* Organic Earthy Buttons */
         .stButton>button {
-            background-color: #2D3E2E; 
-            color: #E2EFE0;            
+            background-color: #384A39; 
+            color: #FDFBF7;            
             border: none;
-            border-radius: 6px;
-            padding: 0.5rem 1rem;
-            font-weight: bold;
-            font-family: 'Rubik', sans-serif;
+            border-radius: 8px;
+            padding: 0.4rem 1.1rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
         .stButton>button:hover {
-            background-color: #435E44; 
+            background-color: #4D634E;
             color: #FFFFFF;
         }
     </style>
@@ -126,49 +145,41 @@ if "selected_post_id" not in st.session_state:
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# 4. UNIFIED NAVBAR CONTAINER (Frosted glass background card unifying title, nav, and admin)
-with st.container():
-    st.markdown(
-        """
-        <div style="background-color: rgba(255, 255, 255, 0.5); padding: 10px 20px; border-radius: 12px; border: 1px solid #cce0d0; margin-bottom: 20px;">
-        </div>
-        """,
-        unsafe_allow_html=True,
+# 4. REFINED ARTISTIC NAVBAR CONTAINER (No ghost bars, perfectly integrated)
+col_title, col_nav, col_admin = st.columns([1.5, 2.2, 1.1])
+
+with col_title:
+    st.markdown("<div style='font-size: 1.4rem; font-weight: 700; color: #2C352D; padding-top: 6px; white-space: nowrap;'>🌿 My Blog</div>", unsafe_allow_html=True)
+
+nav_options = ["Home / Feed", "About Me"]
+if st.session_state.is_admin:
+    nav_options.append("Write a Post")
+
+with col_nav:
+    page = st.radio(
+        "Navigation", 
+        nav_options, 
+        horizontal=True,
+        label_visibility="collapsed"
     )
-    
-    # Overlay columns inside the navbar visual bounds
-    top_col1, top_col2, top_col3 = st.columns([1.5, 2.5, 1.2])
 
-    with top_col1:
-        st.markdown("<div style='font-size: 1.5rem; font-weight: 700; color: #2D3E2E; padding-top: 8px; white-space: nowrap;'>🌿 My Blog</div>", unsafe_allow_html=True)
-
-    nav_options = ["Home / Feed", "About Me"]
-    if st.session_state.is_admin:
-        nav_options.append("Write a Post")
-
-    with top_col2:
-        page = st.radio(
-            "Navigation", 
-            nav_options, 
-            horizontal=True,
-            label_visibility="collapsed"
-        )
-
-    with top_col3:
-        with st.expander("🔐 Admin"):
-            if not st.session_state.is_admin:
-                pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
-                if st.button("Enter"):
-                    if pwd == "mysecretpassword":  # Change to your chosen password!
-                        st.session_state.is_admin = True
-                        st.rerun()
-                    else:
-                        st.error("Wrong")
-            else:
-                st.write("✓ Logged In")
-                if st.button("Log Out"):
-                    st.session_state.is_admin = False
+with col_admin:
+    with st.expander("🔐 Admin"):
+        if not st.session_state.is_admin:
+            pwd = st.text_input("Password", type="password", key="admin_pwd", label_visibility="collapsed", placeholder="Password")
+            if st.button("Enter"):
+                if pwd == "mysecretpassword":
+                    st.session_state.is_admin = True
                     st.rerun()
+                else:
+                    st.error("Wrong")
+        else:
+            st.write("✓ Logged In")
+            if st.button("Log Out"):
+                st.session_state.is_admin = False
+                st.rerun()
+
+st.markdown("<div style='margin-bottom: 25px;'></div>", unsafe_allow_html=True)
 
 # 5. Page Routing & Detail View Logic
 if st.session_state.selected_post_id is not None:
@@ -190,14 +201,14 @@ if st.session_state.selected_post_id is not None:
                     st.success("Post deleted successfully!")
                     st.rerun()
             
-        st.markdown(f"<br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         st.markdown(
             f"""
             <div class="blog-card">
-                <h1>{post['title']}</h1>
-                <p><em>Published on {post['date']}</em></p>
-                <hr style="border-color: #cce0d0;">
-                <p style="font-size: 1.1rem; line-height: 1.6;">{post['content']}</p>
+                <h1 style="font-size: 1.8rem; margin-bottom: 8px;">{post['title']}</h1>
+                <div class="post-date">Written on {post['date']}</div>
+                <hr style="border: none; border-top: 1px solid #E2EAE0; margin: 18px 0;">
+                <p style="font-size: 1.05rem; line-height: 1.7; color: #3A473B;">{post['content']}</p>
             </div>
             """,
             unsafe_allow_html=True,
@@ -211,9 +222,8 @@ if st.session_state.selected_post_id is not None:
 else:
     # --- STANDARD NAVIGATION PAGES ---
     if page == "Home / Feed":
-        st.title("🌱 Feed")
-        st.write("Welcome to my digital garden of thoughts and stories.")
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("<h2 style='font-weight: 600; letter-spacing: -0.5px;'>🌱 Feed</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #556656; margin-bottom: 25px;'>A digital garden of raw thoughts, code snippets, and stories.</p>", unsafe_allow_html=True)
 
         if not st.session_state.posts:
             st.info("No blog posts found.")
@@ -226,9 +236,9 @@ else:
             st.markdown(
                 f"""
                 <div class="blog-card">
-                    <h2>{post['title']}</h2>
-                    <p><em>Published on {post['date']}</em></p>
-                    <p>{post['content'][:100]}...</p>
+                    <h2 style="font-size: 1.5rem; margin-bottom: 4px;">{post['title']}</h2>
+                    <div class="post-date">Published on {post['date']}</div>
+                    <p style="color: #445345; line-height: 1.6; margin-top: 10px;">{post['content'][:110]}...</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -254,19 +264,19 @@ else:
             st.markdown("<br>", unsafe_allow_html=True)
 
     elif page == "About Me":
-        st.title("👤 About Me")
+        st.markdown("<h2 style='font-weight: 600;'>👤 About Me</h2>", unsafe_allow_html=True)
         st.markdown(
             """
             <div class="blog-card">
-                <h3>Hello there!</h3>
-                <p>I'm a creator sharing my journey through code, writing, and minimalist design. This blog serves as my personal space on the web.</p>
+                <h3 style="margin-bottom: 10px;">Hello there!</h3>
+                <p style="line-height: 1.7; color: #445345;">I'm a creator sharing my journey through code, writing, and minimalist design. This blog serves as my personal cabin on the web, away from the noise of standard social platforms.</p>
             </div>
             """,
             unsafe_allow_html=True,
         )
 
     elif page == "Write a Post" and st.session_state.is_admin:
-        st.title("✍️ Create a New Post")
+        st.markdown("<h2 style='font-weight: 600;'>✍️ Plant a New Thought</h2>", unsafe_allow_html=True)
         
         with st.form("blog_form"):
             title = st.text_input("Post Title")
