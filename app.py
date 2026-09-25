@@ -239,7 +239,7 @@ else:
                         st.rerun()
                 with b_col2:
                     if st.button(f"🗑️ Delete", key=f"del_{post['id']}_{i}"):
-                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id"] != post['id']]
+                        st.session_state.posts = [p for p in st.session_state.posts if p.get("id") != post['id']]
                         save_posts(st.session_state.posts)
                         st.success(f"Deleted '{post['title']}'")
                         st.rerun()
